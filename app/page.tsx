@@ -1,65 +1,163 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
+import { LuSparkles } from "react-icons/lu";
+import { PRDModal } from "./components/PRDModal";
+import { QuestionCard } from "./components/QuestionCard";
+import {
+  QUESTIONS,
+  answeredCount,
+  canGeneratePRD,
+  initializeAnswers,
+  nextQuestionId,
+} from "./lib/questions";
+import type { AnswerMap } from "./type/types";
+
+const AUTO_ADVANCE_DELAY = 280;
+
+export default function Page() {
+  const [answers, setAnswers] = useState<AnswerMap>(() =>
+    initializeAnswers(QUESTIONS)
+  );
+  const [currentQuestion, setCurrentQuestion] = useState<number>(
+    QUESTIONS[0]?.id ?? 1
+  );
+  const [showModal, setShowModal] = useState(false);
+
+  const progress = useMemo(
+    () => ({
+      completed: answeredCount(answers),
+      total: QUESTIONS.length,
+    }),
+    [answers]
+  );
+
+  const readyToGenerate = useMemo(
+    () => canGeneratePRD(answers, QUESTIONS),
+    [answers]
+  );
+
+  const progressPercent = useMemo(
+    () =>
+      Math.min(100, Math.round((progress.completed / progress.total) * 100)),
+    [progress.completed, progress.total]
+  );
+
+  const handleAnswer = (questionId: number, answer: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
+
+    const nextId = nextQuestionId(questionId, answer, QUESTIONS.length);
+    if (nextId !== currentQuestion) {
+      setTimeout(() => setCurrentQuestion(nextId), AUTO_ADVANCE_DELAY);
+    }
+  };
+
+  const handleGenerate = () => {
+    if (readyToGenerate) {
+      setShowModal(true);
+    }
+  };
+
+  const handleReset = () => {
+    setAnswers(initializeAnswers(QUESTIONS));
+    setCurrentQuestion(QUESTIONS[0]?.id ?? 1);
+    setShowModal(false);
+  };
+
+  const showGenerateButton =
+    currentQuestion >= QUESTIONS.length || readyToGenerate;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-5 sm:px-6">
+          <motion.div
+            animate={{ rotate: [0, 4, 0] }}
+            transition={{ duration: 6, repeat: Infinity, repeatType: "mirror" }}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 shadow-sm"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <LuSparkles className="h-5 w-5" />
+          </motion.div>
+          <div>
+            <p className="text-sm font-semibold text-slate-600">
+              PRD Generator
+            </p>
+            <h1 className="text-lg font-bold text-slate-900">
+              간결하게 답하고, 바로 초안을 확인하세요
+            </h1>
+          </div>
+          <div className="ml-auto rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
+            {progress.completed} / {progress.total}
+          </div>
+        </div>
+        <div className="mx-auto max-w-4xl px-4 pb-3 sm:px-6">
+          <div className="h-1 rounded-full bg-slate-100">
+            <motion.div
+              className="h-1 rounded-full bg-slate-900"
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ ease: "easeOut", duration: 0.3 }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
+      </header>
+
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+        <div className="mb-8 space-y-6">
+          {QUESTIONS.map((question) => (
+            <AnimatePresence key={question.id}>
+              {currentQuestion >= question.id && (
+                <QuestionCard
+                  question={question}
+                  answer={answers[question.id] ?? ""}
+                  onAnswer={handleAnswer}
+                  isActive={currentQuestion === question.id}
+                />
+              )}
+            </AnimatePresence>
+          ))}
+        </div>
+
+        <AnimatePresence>
+          {showGenerateButton && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              className="flex flex-wrap items-center justify-center gap-3"
+            >
+              <motion.button
+                onClick={handleGenerate}
+                disabled={!readyToGenerate}
+                whileHover={{ y: readyToGenerate ? -2 : 0 }}
+                whileTap={{ y: 0 }}
+                className={`flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold transition ${
+                  readyToGenerate
+                    ? "bg-slate-900 text-white shadow-sm hover:bg-slate-800"
+                    : "cursor-not-allowed bg-slate-200 text-slate-500"
+                }`}
+              >
+                <LuSparkles className="h-4 w-4" />
+                PRD 생성하기
+              </motion.button>
+              <button
+                onClick={handleReset}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+              >
+                다시 시작
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
+
+      <PRDModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        answers={answers}
+        questions={QUESTIONS}
+      />
     </div>
   );
 }
