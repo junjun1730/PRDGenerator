@@ -1,14 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { LuSparkles } from "react-icons/lu";
+import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { PRDModal } from "./components/PRDModal";
 import { QuestionCard } from "./components/QuestionCard";
 import {
-  QUESTIONS,
+  QUESTION_TEMPLATES,
   answeredCount,
-  canGeneratePRD,
+  getQuestions,
   initializeAnswers,
   nextQuestionId,
 } from "./lib/questions";
@@ -17,24 +19,28 @@ import type { AnswerMap } from "./type/types";
 const AUTO_ADVANCE_DELAY = 280;
 
 export default function Page() {
+  const t = useTranslations("HomePage");
+  const tq = useTranslations("questions");
+  const questions = useMemo(() => getQuestions(tq), [tq]);
+
   const [answers, setAnswers] = useState<AnswerMap>(() =>
-    initializeAnswers(QUESTIONS)
+    initializeAnswers(QUESTION_TEMPLATES)
   );
   const [currentQuestion, setCurrentQuestion] = useState<number>(
-    QUESTIONS[0]?.id ?? 1
+    questions[0]?.id ?? 1
   );
   const [showModal, setShowModal] = useState(false);
 
   const progress = useMemo(
     () => ({
       completed: answeredCount(answers),
-      total: QUESTIONS.length,
+      total: questions.length,
     }),
-    [answers]
+    [answers, questions.length]
   );
 
-  const readyToGenerate = useMemo(
-    () => canGeneratePRD(answers, QUESTIONS),
+  const hasAnyAnswer = useMemo(
+    () => answeredCount(answers) > 0,
     [answers]
   );
 
@@ -47,26 +53,21 @@ export default function Page() {
   const handleAnswer = (questionId: number, answer: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: answer }));
 
-    const nextId = nextQuestionId(questionId, answer, QUESTIONS.length);
+    const nextId = nextQuestionId(questionId, answer, questions.length);
     if (nextId !== currentQuestion) {
       setTimeout(() => setCurrentQuestion(nextId), AUTO_ADVANCE_DELAY);
     }
   };
 
   const handleGenerate = () => {
-    if (readyToGenerate) {
-      setShowModal(true);
-    }
+    if (hasAnyAnswer) setShowModal(true);
   };
 
   const handleReset = () => {
-    setAnswers(initializeAnswers(QUESTIONS));
-    setCurrentQuestion(QUESTIONS[0]?.id ?? 1);
+    setAnswers(initializeAnswers(QUESTION_TEMPLATES));
+    setCurrentQuestion(questions[0]?.id ?? 1);
     setShowModal(false);
   };
-
-  const showGenerateButton =
-    currentQuestion >= QUESTIONS.length || readyToGenerate;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -81,14 +82,17 @@ export default function Page() {
           </motion.div>
           <div>
             <p className="text-sm font-semibold text-slate-600">
-              PRD Generator
+              {t("badge")}
             </p>
             <h1 className="text-lg font-bold text-slate-900">
-              간결하게 답하고, 바로 초안을 확인하세요
+              {t("headerTitle")}
             </h1>
           </div>
-          <div className="ml-auto rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
-            {progress.completed} / {progress.total}
+          <div className="ml-auto flex items-center gap-3">
+            <LanguageSwitcher />
+            <div className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
+              {progress.completed} / {progress.total}
+            </div>
           </div>
         </div>
         <div className="mx-auto max-w-4xl px-4 pb-3 sm:px-6">
@@ -104,8 +108,16 @@ export default function Page() {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 text-center"
+        >
+          <p className="text-base text-slate-700">{t("subtitle")}</p>
+        </motion.div>
+
         <div className="mb-8 space-y-6">
-          {QUESTIONS.map((question) => (
+          {questions.map((question) => (
             <AnimatePresence key={question.id}>
               {currentQuestion >= question.id && (
                 <QuestionCard
@@ -120,35 +132,33 @@ export default function Page() {
         </div>
 
         <AnimatePresence>
-          {showGenerateButton && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              className="flex flex-wrap items-center justify-center gap-3"
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            className="flex flex-wrap items-center justify-center gap-3"
+          >
+            <motion.button
+              onClick={handleGenerate}
+              disabled={!hasAnyAnswer}
+              whileHover={{ y: hasAnyAnswer ? -2 : 0 }}
+              whileTap={{ y: 0 }}
+              className={`flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold transition ${
+                hasAnyAnswer
+                  ? "bg-slate-900 text-white shadow-sm hover:bg-slate-800"
+                  : "cursor-not-allowed bg-slate-200 text-slate-500"
+              }`}
             >
-              <motion.button
-                onClick={handleGenerate}
-                disabled={!readyToGenerate}
-                whileHover={{ y: readyToGenerate ? -2 : 0 }}
-                whileTap={{ y: 0 }}
-                className={`flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold transition ${
-                  readyToGenerate
-                    ? "bg-slate-900 text-white shadow-sm hover:bg-slate-800"
-                    : "cursor-not-allowed bg-slate-200 text-slate-500"
-                }`}
-              >
-                <LuSparkles className="h-4 w-4" />
-                PRD 생성하기
-              </motion.button>
-              <button
-                onClick={handleReset}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
-              >
-                다시 시작
-              </button>
-            </motion.div>
-          )}
+              <LuSparkles className="h-4 w-4" />
+              {t("generate")}
+            </motion.button>
+            <button
+              onClick={handleReset}
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+            >
+              {t("reset")}
+            </button>
+          </motion.div>
         </AnimatePresence>
       </main>
 
@@ -156,7 +166,7 @@ export default function Page() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         answers={answers}
-        questions={QUESTIONS}
+        questions={questions}
       />
     </div>
   );

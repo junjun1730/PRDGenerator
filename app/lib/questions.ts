@@ -1,64 +1,89 @@
 import type { AnswerMap, Question } from "../type/types";
 
+type QuestionTemplate = {
+  id: number;
+  questionKey: string;
+  placeholderKey: string;
+  type?: Question["type"];
+};
+
 const trimValue = (value: string) => value.trim();
 
-export const QUESTIONS: ReadonlyArray<Question> = [
+export const QUESTION_TEMPLATES: ReadonlyArray<QuestionTemplate> = [
   {
     id: 1,
-    question: "서비스의 이름을 알려주세요",
-    placeholder: "예: TaskFlow",
+    questionKey: "identity",
+    placeholderKey: "identityPlaceholder",
     type: "text",
   },
   {
     id: 2,
-    question: "서비스를 한 줄로 설명해주세요",
-    placeholder: "예: 팀 협업을 위한 스마트한 작업 관리 도구",
-    type: "text",
+    questionKey: "painPoint",
+    placeholderKey: "painPointPlaceholder",
+    type: "textarea",
   },
   {
     id: 3,
-    question: "타겟 사용자는 누구인가요?",
-    placeholder: "예: 스타트업 팀, 프리랜서, 소규모 비즈니스",
+    questionKey: "featuresTop3",
+    placeholderKey: "featuresTop3Placeholder",
     type: "textarea",
   },
   {
     id: 4,
-    question: "해결하고자 하는 문제는 무엇인가요?",
-    placeholder: "예: 팀 간 커뮤니케이션 비효율, 작업 진행 상황 추적 어려움",
+    questionKey: "userJourney",
+    placeholderKey: "userJourneyPlaceholder",
     type: "textarea",
   },
   {
     id: 5,
-    question: "핵심 기능을 알려주세요 (최대 5개)",
-    placeholder:
-      "각 기능을 줄바꿈으로 구분해주세요\n예:\n- 실시간 협업 보드\n- 작업 자동 할당\n- 진행률 대시보드",
-    type: "textarea",
-  },
-  {
-    id: 6,
-    question: "예상 출시일은 언제인가요?",
-    placeholder: "예: 2025년 3월",
+    questionKey: "platformStack",
+    placeholderKey: "platformStackPlaceholder",
     type: "text",
   },
   {
+    id: 6,
+    questionKey: "benchmark",
+    placeholderKey: "benchmarkPlaceholder",
+    type: "textarea",
+  },
+  {
     id: 7,
-    question: "성공 지표는 무엇인가요?",
-    placeholder: "예: 월간 활성 사용자 1만명, 사용자 만족도 4.5/5.0",
+    questionKey: "outOfScope",
+    placeholderKey: "outOfScopePlaceholder",
+    type: "textarea",
+  },
+  {
+    id: 8,
+    questionKey: "successMetrics",
+    placeholderKey: "successMetricsPlaceholder",
+    type: "textarea",
+  },
+  {
+    id: 9,
+    questionKey: "extras",
+    placeholderKey: "extrasPlaceholder",
     type: "textarea",
   },
 ] as const;
 
-export const initializeAnswers = (
-  questionList: ReadonlyArray<Question>
-): AnswerMap =>
-  questionList.reduce<AnswerMap>(
-    (acc, { id }) => ({ ...acc, [id]: "" }),
-    {}
-  );
+export const getQuestions = (
+  translate: (key: string) => string
+): ReadonlyArray<Question> =>
+  QUESTION_TEMPLATES.map(({ id, questionKey, placeholderKey, type }) => ({
+    id,
+    type,
+    question: translate(questionKey),
+    placeholder: translate(placeholderKey),
+  }));
 
-export const canGeneratePRD = (
+export const initializeAnswers = <T extends { id: number }>(
+  questionList: ReadonlyArray<T>
+): AnswerMap =>
+  questionList.reduce<AnswerMap>((acc, { id }) => ({ ...acc, [id]: "" }), {});
+
+export const canGeneratePRD = <T extends { id: number }>(
   answers: AnswerMap,
-  questionList: ReadonlyArray<Question>
+  questionList: ReadonlyArray<T>
 ) => questionList.every(({ id }) => Boolean(trimValue(answers[id] ?? "")));
 
 export const answeredCount = (answers: AnswerMap) =>

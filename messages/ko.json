@@ -1,0 +1,36 @@
+{
+  "HomePage": {
+    "title": "PRD 생성기",
+    "badge": "PRD 생성기",
+    "headerTitle": "간결하게 답하고, 바로 초안을 확인하세요",
+    "subtitle": "필요한 항목만 입력하고 즉시 초안 PRD를 확인하세요.",
+    "generate": "PRD 생성",
+    "reset": "초기화",
+    "language": "언어",
+    "modalAuto": "자동 생성",
+    "modalDraft": "초안 PRD",
+    "close": "닫기",
+    "saveDraft": "초안 저장",
+    "empty": "아직 내용이 없습니다."
+  },
+  "questions": {
+    "identity": "서비스 이름과 한 줄 정의",
+    "identityPlaceholder": "Friendly Market — 우리 동네 따뜻한 커뮤니티 마켓",
+    "painPoint": "누구의 어떤 불편을 해결하나요?",
+    "painPointPlaceholder": "바쁜 직장인이 점심을 빨리 고를 수 있게 돕고 싶어요.",
+    "featuresTop3": "꼭 들어가야 할 핵심 기능 Top 3",
+    "featuresTop3Placeholder": "1. 주변 식당 랜덤 추천\n2. 동료와 투표하기\n3. 리뷰와 평점 보기",
+    "userJourney": "앱을 열어 목표를 달성하기까지의 사용 흐름",
+    "userJourneyPlaceholder": "앱 실행 → 인원수·음식 선호 선택 → 추천 받기 → 채팅으로 공유",
+    "platformStack": "플랫폼과 기술 환경",
+    "platformStackPlaceholder": "모바일 웹(React), 데이터베이스는 Supabase 예정",
+    "benchmark": "참고하고 싶은 디자인/기능이 있나요?",
+    "benchmarkPlaceholder": "차분한 은행 앱 느낌의 디자인, 익숙한 지도 앱 같은 동선",
+    "outOfScope": "이번 버전에 포함하지 않을 기능",
+    "outOfScopePlaceholder": "결제는 제외. 회원가입 없이 게스트만 사용.",
+    "successMetrics": "성공을 어떻게 판단할까요?",
+    "successMetricsPlaceholder": "추천받은 뒤 '공유하기' 버튼을 누른 횟수를 본다",
+    "extras": "기타 요구사항이나 꼭 넣고 싶은 워딩이 있나요?",
+    "extrasPlaceholder": "톤앤매너, 반드시 써야 할 용어, 놓치면 안 되는 디테일 등을 적어주세요"
+  }
+}

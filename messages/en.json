@@ -1,5 +1,36 @@
 {
   "HomePage": {
-    "title": "Hello world!"
+    "title": "PRD Generator",
+    "badge": "PRD Generator",
+    "headerTitle": "Answer briefly, review instantly",
+    "subtitle": "Provide concise answers to preview your draft right away.",
+    "generate": "Generate PRD",
+    "reset": "Reset",
+    "language": "Language",
+    "modalAuto": "Auto-generated",
+    "modalDraft": "Draft PRD",
+    "close": "Close",
+    "saveDraft": "Save draft",
+    "empty": "No content yet."
+  },
+  "questions": {
+    "identity": "Service name and one-line definition",
+    "identityPlaceholder": "Friendly Market — a warm local community marketplace",
+    "painPoint": "Who is this for, and which pain point will you remove?",
+    "painPointPlaceholder": "Busy office workers who want faster lunch decisions",
+    "featuresTop3": "Top 3 must-have features",
+    "featuresTop3Placeholder": "1. Random nearby restaurant picks\n2. Voting with teammates\n3. See ratings and reviews",
+    "userJourney": "User journey from opening the app to achieving the goal",
+    "userJourneyPlaceholder": "Open app → pick people and food preference → get suggestions → share via chat",
+    "platformStack": "Platform and technical environment",
+    "platformStackPlaceholder": "Mobile web (React) with Supabase database",
+    "benchmark": "Any design or feature references?",
+    "benchmarkPlaceholder": "Clean, calm design like a banking app; map interactions like a familiar map app",
+    "outOfScope": "Features to exclude for this version",
+    "outOfScopePlaceholder": "No payments yet. Guest mode only.",
+    "successMetrics": "How will you judge success?",
+    "successMetricsPlaceholder": "Count how many times users tap Share after getting a suggestion",
+    "extras": "Any other specific requirements or wording?",
+    "extrasPlaceholder": "Tone of voice, must-use terms, or small details you don’t want missed"
   }
 }

@@ -1,5 +1,36 @@
 {
   "HomePage": {
-    "title": "ハローワールド"
+    "title": "PRDジェネレーター",
+    "badge": "PRDジェネレーター",
+    "headerTitle": "簡潔に回答してすぐに確認",
+    "subtitle": "必要事項だけ入力して、すぐに下書きを確認しましょう。",
+    "generate": "PRDを生成",
+    "reset": "リセット",
+    "language": "言語",
+    "modalAuto": "自動生成",
+    "modalDraft": "ドラフトPRD",
+    "close": "閉じる",
+    "saveDraft": "下書きを保存",
+    "empty": "まだ内容がありません。"
+  },
+  "questions": {
+    "identity": "サービス名と一言の定義",
+    "identityPlaceholder": "Friendly Market — 近所の温かいコミュニティマーケット",
+    "painPoint": "誰のどんな不便を解消しますか？",
+    "painPointPlaceholder": "忙しい会社員がランチを早く選べるようにしたいです。",
+    "featuresTop3": "必須機能トップ3",
+    "featuresTop3Placeholder": "1. 近くのランダムな店を提案\n2. チームメイトと投票\n3. 口コミと評価を確認",
+    "userJourney": "アプリを開いて目標を達成するまでの流れ",
+    "userJourneyPlaceholder": "アプリ起動 → 人数と好みを選択 → 提案を受ける → チャットで共有",
+    "platformStack": "プラットフォームと技術環境",
+    "platformStackPlaceholder": "モバイルWeb（React）、データベースはSupabase予定",
+    "benchmark": "参考にしたいデザインや機能はありますか？",
+    "benchmarkPlaceholder": "落ち着いた銀行アプリのようなデザイン、一般的な地図アプリの操作感",
+    "outOfScope": "今回のバージョンに含めない機能",
+    "outOfScopePlaceholder": "決済なし。ゲスト利用のみ。",
+    "successMetrics": "成功をどう判断しますか？",
+    "successMetricsPlaceholder": "提案後に「共有」ボタンを押した回数を数える",
+    "extras": "その他の要望や使いたい表現はありますか？",
+    "extrasPlaceholder": "トーン&マナー、必ず使いたい用語、細かな要望などを記載してください"
   }
 }
