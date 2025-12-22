@@ -10,7 +10,7 @@
     "modalAuto": "自動生成",
     "modalDraft": "ドラフトPRD",
     "close": "閉じる",
-    "saveDraft": "下書きを保存",
+    "saveDraft": "PRDを生成",
     "empty": "まだ内容がありません。"
   },
   "questions": {

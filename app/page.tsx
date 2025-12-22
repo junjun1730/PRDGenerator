@@ -7,6 +7,7 @@ import { LuSparkles } from "react-icons/lu";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { PRDModal } from "./components/PRDModal";
 import { QuestionCard } from "./components/QuestionCard";
+import { generatePrd } from "./lib/api";
 import {
   QUESTION_TEMPLATES,
   answeredCount,
@@ -30,6 +31,8 @@ export default function Page() {
     questions[0]?.id ?? 1
   );
   const [showModal, setShowModal] = useState(false);
+  const [generatedPrd, setGeneratedPrd] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const progress = useMemo(
     () => ({
@@ -39,10 +42,7 @@ export default function Page() {
     [answers, questions.length]
   );
 
-  const hasAnyAnswer = useMemo(
-    () => answeredCount(answers) > 0,
-    [answers]
-  );
+  const hasAnyAnswer = useMemo(() => answeredCount(answers) > 0, [answers]);
 
   const progressPercent = useMemo(
     () =>
@@ -60,13 +60,39 @@ export default function Page() {
   };
 
   const handleGenerate = () => {
-    if (hasAnyAnswer) setShowModal(true);
+    if (hasAnyAnswer) {
+      setGeneratedPrd("");
+      setIsGenerating(false);
+      setShowModal(true);
+    }
   };
 
   const handleReset = () => {
     setAnswers(initializeAnswers(QUESTION_TEMPLATES));
     setCurrentQuestion(questions[0]?.id ?? 1);
     setShowModal(false);
+    setGeneratedPrd("");
+    setIsGenerating(false);
+  };
+
+  const handleGeneratePRD = async () => {
+    setIsGenerating(true);
+    setGeneratedPrd("");
+
+    await generatePrd({
+      answers,
+      onData: (chunk) => {
+        setGeneratedPrd((prev) => prev + chunk);
+      },
+      onCompletion: () => {
+        setIsGenerating(false);
+      },
+      onError: (error) => {
+        // Optionally, set an error state to show in the UI
+        console.error("Error generating PRD:", error);
+        setIsGenerating(false);
+      },
+    });
   };
 
   return (
@@ -81,9 +107,7 @@ export default function Page() {
             <LuSparkles className="h-5 w-5" />
           </motion.div>
           <div>
-            <p className="text-sm font-semibold text-slate-600">
-              {t("badge")}
-            </p>
+            <p className="text-sm font-semibold text-slate-600">{t("badge")}</p>
             <h1 className="text-lg font-bold text-slate-900">
               {t("headerTitle")}
             </h1>
@@ -165,8 +189,11 @@ export default function Page() {
       <PRDModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
+        onSubmit={handleGeneratePRD}
         answers={answers}
         questions={questions}
+        isGenerating={isGenerating}
+        generatedPrd={generatedPrd}
       />
     </div>
   );
