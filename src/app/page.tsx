@@ -1,7 +1,9 @@
+'use client';
+
 import Header from '@/components/layout/Header';
 import ResponsiveContainer from '@/components/layout/ResponsiveContainer';
 import FloatingActions from '@/components/layout/FloatingActions';
-import Card from '@/components/ui/Card';
+import QuestionnaireContainer from '@/components/questionnaire/QuestionnaireContainer';
 
 export default function Home() {
   return (
@@ -20,35 +22,8 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Questionnaire Placeholder */}
-          <div className="max-w-4xl mx-auto space-y-8">
-            <Card shadow="medium" padding="lg">
-              <h2 className="text-2xl font-semibold text-neutral-900 mb-4">
-                1단계: 서비스 개요
-              </h2>
-              <p className="text-neutral-600">
-                질문지 컴포넌트가 여기에 표시됩니다.
-              </p>
-            </Card>
-
-            <Card shadow="soft" padding="lg">
-              <h2 className="text-2xl font-semibold text-neutral-400 mb-4">
-                2단계: 디자인 요소
-              </h2>
-              <p className="text-neutral-400">
-                1단계 완료 후 활성화됩니다.
-              </p>
-            </Card>
-
-            <Card shadow="soft" padding="lg">
-              <h2 className="text-2xl font-semibold text-neutral-400 mb-4">
-                3단계: 기술 제약사항
-              </h2>
-              <p className="text-neutral-400">
-                2단계 완료 후 활성화됩니다.
-              </p>
-            </Card>
-          </div>
+          {/* Questionnaire */}
+          <QuestionnaireContainer />
         </ResponsiveContainer>
       </main>
 

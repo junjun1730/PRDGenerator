@@ -12,7 +12,7 @@ const initialStage1: Stage1Data = {
   coreFeatures: [],
   mainScreens: '',
   userJourney: '',
-  toneAndManner: '',
+  serviceMood: '',
 };
 
 const initialStage2: Stage2Data = {
@@ -36,15 +36,17 @@ const initialStage2: Stage2Data = {
 const initialStage3: Stage3Data = {
   techStack: {
     frontend: [],
+    database: [],
     backend: [],
+    other: [],
   },
   dataManagement: {
     realtimeRequired: false,
     largeMediaHandling: false,
   },
   externalAPIs: [],
-  authMethod: 'email',
-  edgeCases: '',
+  authMethod: undefined,
+  exceptionHandling: '',
 };
 
 export const useQuestionnaireStore = create<QuestionnaireStore>()(

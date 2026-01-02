@@ -4,7 +4,7 @@ export interface Stage1Data {
   coreFeatures: string[]; // Top 3 features
   mainScreens: string;
   userJourney: string;
-  toneAndManner: string;
+  serviceMood: string; // 서비스 분위기와 느낌
 }
 
 // Stage 2: Design Elements
@@ -30,15 +30,17 @@ export interface Stage2Data {
 export interface Stage3Data {
   techStack: {
     frontend: string[];
+    database: string[];
     backend: string[];
+    other: string[];
   };
   dataManagement: {
     realtimeRequired: boolean;
     largeMediaHandling: boolean;
   };
   externalAPIs: string[];
-  authMethod: 'email' | 'two-factor' | 'biometric';
-  edgeCases: string;
+  authMethod?: 'email' | 'two-factor';
+  exceptionHandling: string; // 예외 상황 처리
 }
 
 // Complete questionnaire state

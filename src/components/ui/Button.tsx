@@ -21,17 +21,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+      'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-normal ease-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-102 active:scale-98';
 
     const variants = {
       primary:
-        'bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700 shadow-soft hover:shadow-medium',
+        'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-interactive-sm hover:shadow-interactive-md',
       secondary:
-        'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:bg-neutral-300',
+        'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 shadow-sm hover:shadow-md',
       outline:
-        'border-2 border-neutral-300 bg-transparent text-neutral-700 hover:bg-neutral-50 active:bg-neutral-100',
+        'border-2 border-neutral-300 bg-transparent text-neutral-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700',
       ghost:
-        'bg-transparent text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200',
+        'bg-transparent text-neutral-700 hover:bg-neutral-100',
     };
 
     const sizes = {
