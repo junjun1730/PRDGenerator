@@ -30,6 +30,82 @@ npm run start        # Start production server
 npm run lint         # Run ESLint
 ```
 
+# TDD & Implementation Workflow (CRITICAL)
+
+We strictly follow a **Test-Driven Development (TDD)** workflow.
+**Do not write implementation code before writing a failing test.**
+
+---
+
+## The "Plan Mode" Protocol
+
+When starting a new feature or a complex task, use a temporary **PLAN.md** or a memory scratchpad and follow the process below.
+
+### Phase 1: Analysis & Plan
+
+- Break down the feature into **small, testable units**.
+- Create a **scenario checklist**:
+  - Happy Path
+  - Edge Cases
+  - Error States
+
+---
+
+## Phase 2: TDD Cycle (Red–Green–Refactor)
+
+### 🔴 RED (Write Failing Test)
+
+- Write test cases **before the component or function exists**.
+- **Stop and run**: Execute the tests and **confirm that they fail**.
+- **Do not proceed** until failure is confirmed.
+
+### 🟢 GREEN (Make it Pass)
+
+- Write the **minimum amount of code required** to make the test pass.
+- Avoid over-engineering and focus **only on the current test case**.
+- **Stop and run**: Confirm that the test passes.
+
+### 🔵 REFACTOR (Clean Up)
+
+- Improve code structure and refine naming.
+- Remove duplication.
+- After refactoring, **ensure all tests still pass**.
+
+---
+
+## Phase 3: Integration & Quality Gate
+
+- Verify that the new feature **integrates correctly with existing components**.
+- Run the **entire test suite** to ensure there are no regressions.
+- Confirm alignment with **design system tokens**.
+
+---
+
+## Testing Guidelines
+
+### Principles of Test Code
+
+- **Conciseness**: Keep test code as concise and readable as possible. Avoid unnecessary boilerplate or overly verbose setups.
+- **Clarity**: Tests should serve as documentation; prioritize clear intent over complex logic.
+
+### Unit Tests
+
+- Focus on utility-level logic:
+  - Zustand actions
+  - Validation logic (Zod schemas)
+
+### Component Tests
+
+- Use **React Testing Library**.
+- Test **user interactions** rather than internal implementation details (e.g., clicks, input changes).
+
+### Mocking
+
+- Mock all external dependencies:
+  - API calls
+  - Complex child components
+- Keep tests **fast, isolated, and deterministic**.
+
 ## Architecture Overview
 
 ### State Management Architecture
@@ -78,6 +154,7 @@ store.updateStage1({ serviceName: "value" }); // Partial updates
 The project uses a comprehensive design token system for consistency:
 
 - **Colors**:
+
   - `brand`: Cyan/Sky blue scale for primary actions and brand identity
   - `accent`: Magenta/Fuchsia scale for highlights and interactive elements
   - `neutral`: Zinc grayscale for UI elements
@@ -85,11 +162,13 @@ The project uses a comprehensive design token system for consistency:
   - `gradients`: Pre-defined gradients for modern UI effects
 
 - **Shadows**:
+
   - Standard: `xs` to `2xl` for elevation hierarchy
   - `glow`: Animated glow effects for interactive states
   - `interactive`: Special shadows for hover/focus states
 
 - **Animations**:
+
   - Entry animations: `fadeIn`, `slideInUp/Down/Left/Right`, `scaleIn`
   - Interactive: `pulse`, `bounce`, `shimmer`
   - Progressive reveal: Questions should animate in sequentially
@@ -102,6 +181,7 @@ The project uses a comprehensive design token system for consistency:
 **Interactive Design Patterns**:
 
 1. **Progressive Question Reveal**:
+
    ```typescript
    // Questions should appear one at a time as user completes previous input
    // Use slideInUp + fadeIn animations with staggered delays
@@ -109,6 +189,7 @@ The project uses a comprehensive design token system for consistency:
    ```
 
 2. **Input Focus States**:
+
    - Apply `glow` shadow on focus
    - Subtle scale transform (1.02) for active inputs
    - Use `spring` easing for smooth transitions
@@ -121,6 +202,7 @@ The project uses a comprehensive design token system for consistency:
 **Tailwind Configuration** (`tailwind.config.ts`):
 
 Custom configuration extends default Tailwind with token values:
+
 - Import and apply values from `tokens.json`
 - Custom shadow utilities: `shadow-glow-sm`, `shadow-interactive-md`
 - Animation utilities: `animate-slideInUp`, `animate-fadeIn`
@@ -162,15 +244,21 @@ All types are strictly typed interfaces - use these when implementing forms to e
 import { cn } from "@/lib/utils/cn";
 
 const variants = {
-  primary: "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-interactive-sm hover:shadow-interactive-md transition-all duration-normal",
-  outline: "border-2 border-neutral-300 bg-transparent hover:border-brand-500 hover:bg-brand-50 transition-all duration-normal",
-  ghost: "bg-transparent hover:bg-neutral-100 active:scale-98 transition-all duration-fast"
+  primary:
+    "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-interactive-sm hover:shadow-interactive-md transition-all duration-normal",
+  outline:
+    "border-2 border-neutral-300 bg-transparent hover:border-brand-500 hover:bg-brand-50 transition-all duration-normal",
+  ghost:
+    "bg-transparent hover:bg-neutral-100 active:scale-98 transition-all duration-fast",
 };
 
 // Interactive states should include animations
-const interactiveClasses = "hover:scale-102 active:scale-98 transition-transform duration-normal ease-spring";
+const interactiveClasses =
+  "hover:scale-102 active:scale-98 transition-transform duration-normal ease-spring";
 
-<div className={cn(baseStyles, variants[variant], interactiveClasses, className)} />;
+<div
+  className={cn(baseStyles, variants[variant], interactiveClasses, className)}
+/>;
 ```
 
 **Animation Implementation**:
@@ -182,7 +270,7 @@ const QuestionItem = ({ index, children }) => (
     className="animate-slideInUp opacity-0"
     style={{
       animationDelay: `${index * 150}ms`,
-      animationFillMode: 'forwards'
+      animationFillMode: "forwards",
     }}
   >
     {children}
@@ -190,9 +278,7 @@ const QuestionItem = ({ index, children }) => (
 );
 
 // Focus state with glow effect
-<input
-  className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
-/>
+<input className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring" />;
 ```
 
 **Responsive Design**:
@@ -236,6 +322,7 @@ const QuestionItem = ({ index, children }) => (
 **Programming Paradigm**: Prefer functional programming and OOP principles (as specified in initial.md), use clean architecture
 
 **UI/UX Philosophy**:
+
 - **Minimalist & Refined**: Clean layouts with purposeful whitespace, inspired by Lovable and Bolt.new
 - **Progressive Disclosure**: Reveal questions sequentially as user progresses - don't overwhelm with all questions at once
 - **Delightful Interactions**: Use subtle animations (slide, fade, scale) to create smooth, engaging experience
