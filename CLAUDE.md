@@ -1,337 +1,500 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Automated development workflow guide for AI PRD Generator project.
+Claude Code reads this document and executes tasks automatically.
 
-## Project Overview
+---
 
-**AI PRD Generator** - An AI-powered service that generates Product Requirements Documents (PRD) through a 3-stage questionnaire system.
+## 📦 Project Context
 
-**Target Users**: Product managers, developers, and solo entrepreneurs who want to quickly document their ideas.
-
-**Tech Stack**:
-
-- Frontend: Next.js 15 (App Router), React 19, TypeScript
-- Styling: Tailwind CSS with custom design system
-- State: Zustand with local storage persistence
-- Forms: React Hook Form + Zod validation
-- Planned: Google OAuth (Supabase), Gemini API, PDF generation
-
-## Development Commands
-
-```bash
-# Development
-npm run dev          # Start dev server at http://localhost:3000
-
-# Production
-npm run build        # Build for production
-npm run start        # Start production server
-
-# Code Quality
-npm run lint         # Run ESLint
+```json
+{
+  "name": "AI PRD Generator",
+  "purpose": "3-stage questionnaire → Auto-generate PRD",
+  "stack": ["Next.js 15", "React 19", "TypeScript", "Zustand", "Tailwind"],
+  "language": "Korean (UI text)",
+  "paradigm": "TDD + Functional Programming"
+}
 ```
 
-# TDD & Implementation Workflow (CRITICAL)
+**Commands**:
 
-We strictly follow a **Test-Driven Development (TDD)** workflow.
-**Do not write implementation code before writing a failing test.**
-
----
-
-## The "Plan Mode" Protocol
-
-When starting a new feature or a complex task, use a temporary **PLAN.md** or a memory scratchpad and follow the process below.
-
-### Phase 1: Analysis & Plan
-
-- Break down the feature into **small, testable units**.
-- Create a **scenario checklist**:
-  - Happy Path
-  - Edge Cases
-  - Error States
+```bash
+npm run dev    # Dev server (localhost:3000)
+npm test       # Run tests (Vitest)
+npm run build  # Production build
+```
 
 ---
 
-## Phase 2: TDD Cycle (Red–Green–Refactor)
+## 🤖 Agent Workflow Protocol
 
-### 🔴 RED (Write Failing Test)
+### Execution Trigger
 
-- Write test cases **before the component or function exists**.
-- **Stop and run**: Execute the tests and **confirm that they fail**.
-- **Do not proceed** until failure is confirmed.
+When Claude Code receives a task, **always follow this protocol**:
 
-### 🟢 GREEN (Make it Pass)
-
-- Write the **minimum amount of code required** to make the test pass.
-- Avoid over-engineering and focus **only on the current test case**.
-- **Stop and run**: Confirm that the test passes.
-
-### 🔵 REFACTOR (Clean Up)
-
-- Improve code structure and refine naming.
-- Remove duplication.
-- After refactoring, **ensure all tests still pass**.
+```
+User Request → Classify Task Type → Execute Protocol → Report Status
+```
 
 ---
 
-## Phase 3: Integration & Quality Gate
+## 🔀 Task Classification & Routing
 
-- Verify that the new feature **integrates correctly with existing components**.
-- Run the **entire test suite** to ensure there are no regressions.
-- Confirm alignment with **design system tokens**.
+### 1️⃣ Feature Development (NEW)
+
+**Trigger**: "new feature", "add component", "implement form", etc.
+
+**Protocol**: `PROTOCOL_FEATURE_DEV`
+
+````yaml
+Step 1: Planning
+  - Read: docs/scenarios/ (existing scenarios for reference)
+  - Create: docs/scenarios/{feature-name}.md
+  - Content:
+      - Happy Path (normal scenarios)
+      - Edge Cases (boundary conditions)
+      - Error States (error handling)
+  - Format:
+      ```markdown
+      # [Feature Name]
+
+      ## Test Scenarios
+
+      ### Happy Path
+      - Input: {specific values}
+      - Expected: {expected behavior}
+      - Validation: {Zod rules}
+
+      ### Edge Cases
+      - Empty input → error message
+      - Max length exceeded → truncate
+
+      ### Error States
+      - Network failure → retry UI
+      ```
+
+Step 2: Test Writing (RED)
+  - Read: docs/scenarios/{feature-name}.md
+  - Create: src/**/__tests__/{feature-name}.test.ts(x)
+  - Rules:
+      - Use Vitest + React Testing Library
+      - Mock all external dependencies
+      - One assertion per test case
+  - Execute: npm test {feature-name}
+  - Verify: Tests MUST fail (RED state)
+  - Report: "✗ {N} tests failing as expected"
+
+Step 3: Implementation (GREEN)
+  - Read:
+      - Failed test output
+      - src/lib/types/questionnaire.ts (type definitions)
+      - tokens.json (design system)
+  - Create: Minimum code to pass tests
+  - Execute: npm test {feature-name}
+  - Verify: Tests MUST pass (GREEN state)
+  - Report: "✓ {N} tests passing"
+
+Step 4: Refactoring (REFACTOR)
+  - Apply:
+      - Design tokens from tokens.json
+      - Animation patterns (progressive reveal)
+      - TypeScript strict mode compliance
+  - Execute: npm test (full test suite)
+  - Verify: All tests still pass
+  - Report: "✓ Refactored, all tests passing"
+
+Step 5: Documentation Update
+  - Update: process/checklist.md
+  - Mark completed tasks with [x]
+  - Add new tasks if discovered
+````
+
+**Output Template**:
+
+```
+🎯 Task: {feature-name}
+
+📋 Scenario Created: docs/scenarios/{feature-name}.md
+🔴 Tests Written: {N} failing tests
+🟢 Implementation: All tests passing
+🔵 Refactored: Design tokens applied
+📝 Checklist Updated: process/checklist.md
+
+Files Changed:
+- docs/scenarios/{feature-name}.md
+- src/**/{feature-name}.tsx
+- src/**/__tests__/{feature-name}.test.tsx
+```
 
 ---
 
-## Testing Guidelines
+### 2️⃣ Bug Fix
 
-### Principles of Test Code
+**Trigger**: "fix bug", "resolve error", "test failure", etc.
 
-- **Conciseness**: Keep test code as concise and readable as possible. Avoid unnecessary boilerplate or overly verbose setups.
-- **Clarity**: Tests should serve as documentation; prioritize clear intent over complex logic.
+**Protocol**: `PROTOCOL_BUG_FIX`
 
-### Unit Tests
+```yaml
+Step 1: Reproduce
+  - Read: Error logs / user report
+  - Create: Minimal reproduction test
+  - Execute: npm test
+  - Verify: Test fails (confirms bug)
 
-- Focus on utility-level logic:
-  - Zustand actions
-  - Validation logic (Zod schemas)
+Step 2: Fix
+  - Apply minimal change
+  - Execute: npm test
+  - Verify: Test passes
 
-### Component Tests
+Step 3: Regression Check
+  - Execute: npm test (full suite)
+  - Verify: No other tests broken
+```
 
-- Use **React Testing Library**.
-- Test **user interactions** rather than internal implementation details (e.g., clicks, input changes).
+---
 
-### Mocking
+### 3️⃣ Refactoring Only
 
-- Mock all external dependencies:
-  - API calls
-  - Complex child components
-- Keep tests **fast, isolated, and deterministic**.
+**Trigger**: "clean up code", "improve performance", "apply design tokens", etc.
 
-## Architecture Overview
+**Protocol**: `PROTOCOL_REFACTOR`
 
-### State Management Architecture
+```yaml
+Step 1: Baseline
+  - Execute: npm test
+  - Verify: All tests passing before refactor
 
-**Zustand Store Pattern** (`src/lib/store/useQuestionnaireStore.ts`):
+Step 2: Refactor
+  - Apply changes
+  - Maintain behavior (no logic changes)
 
-- Single global store for all questionnaire data
-- Automatic persistence to localStorage via Zustand middleware
-- Three distinct stage data structures (Stage1Data, Stage2Data, Stage3Data)
-- Store tracks current stage and completion state
-- Actions follow functional programming patterns (immutable updates)
+Step 3: Validation
+  - Execute: npm test
+  - Verify: All tests still passing
+```
 
-Key pattern:
+---
+
+### 4️⃣ Documentation
+
+**Trigger**: "write docs", "update README", "add comments", etc.
+
+**Protocol**: `PROTOCOL_DOCS`
+
+```yaml
+Step 1: Update Target Files
+  - README.md (user-facing)
+  - CLAUDE.md (agent-facing)
+  - process/checklist.md (task tracking)
+  - docs/scenarios/ (test scenarios)
+
+Step 2: Verify Links
+  - Check all internal references
+  - Validate code examples compile
+```
+
+---
+
+## 📐 Architecture Reference
+
+### State Management (Zustand)
 
 ```typescript
-// Store automatically persists to localStorage
+// src/lib/store/useQuestionnaireStore.ts
+// Single global store with automatic localStorage sync
+
 const store = useQuestionnaireStore();
-store.updateStage1({ serviceName: "value" }); // Partial updates
+
+// Actions (all immutable updates)
+store.updateStage1({ serviceName: "value" }); // Partial update
+store.setCurrentStage(2);
+store.resetQuestionnaire();
 ```
 
 ### Component Architecture
 
-**Three-Layer Structure**:
-
-1. **Layout Components** (`src/components/layout/`):
-
-   - `Header`: Sticky navigation with auth placeholder
-   - `ResponsiveContainer`: Consistent max-width container (`.container-responsive` utility)
-   - `FloatingActions`: Fixed bottom-right buttons (PRD generation, reset)
-
-2. **UI Components** (`src/components/ui/`):
-
-   - Reusable primitives: Button, Card, Input, Textarea, Select, Modal
-   - Variant-based styling using TypeScript discriminated unions
-   - All use `cn()` utility for className composition (clsx + tailwind-merge)
-   - ForwardRef pattern for proper ref handling
-
-3. **Feature Components** (planned in `src/components/questionnaire/`, `src/components/prd/`):
-   - Stage-specific questionnaire forms
-   - PRD generation and display components
-
-### Design System
-
-**Design Tokens** (`tokens.json`):
-
-The project uses a comprehensive design token system for consistency:
-
-- **Colors**:
-
-  - `brand`: Cyan/Sky blue scale for primary actions and brand identity
-  - `accent`: Magenta/Fuchsia scale for highlights and interactive elements
-  - `neutral`: Zinc grayscale for UI elements
-  - `success/warning/error`: Semantic colors for feedback
-  - `gradients`: Pre-defined gradients for modern UI effects
-
-- **Shadows**:
-
-  - Standard: `xs` to `2xl` for elevation hierarchy
-  - `glow`: Animated glow effects for interactive states
-  - `interactive`: Special shadows for hover/focus states
-
-- **Animations**:
-
-  - Entry animations: `fadeIn`, `slideInUp/Down/Left/Right`, `scaleIn`
-  - Interactive: `pulse`, `bounce`, `shimmer`
-  - Progressive reveal: Questions should animate in sequentially
-
-- **Transitions**:
-  - Duration: `instant` (50ms) to `slowest` (700ms)
-  - Easing: `spring` for playful interactions, `bounce` for attention-grabbing effects
-  - Use `spring` easing for input field appearances
-
-**Interactive Design Patterns**:
-
-1. **Progressive Question Reveal**:
-
-   ```typescript
-   // Questions should appear one at a time as user completes previous input
-   // Use slideInUp + fadeIn animations with staggered delays
-   // Example: Q1 visible → User fills Q1 → Q2 animates in
-   ```
-
-2. **Input Focus States**:
-
-   - Apply `glow` shadow on focus
-   - Subtle scale transform (1.02) for active inputs
-   - Use `spring` easing for smooth transitions
-
-3. **Stage Transitions**:
-   - Use `slideInRight` when moving to next stage
-   - Apply gradient backgrounds for stage headers
-   - Animate stage completion with `scaleIn` + success color
-
-**Tailwind Configuration** (`tailwind.config.ts`):
-
-Custom configuration extends default Tailwind with token values:
-
-- Import and apply values from `tokens.json`
-- Custom shadow utilities: `shadow-glow-sm`, `shadow-interactive-md`
-- Animation utilities: `animate-slideInUp`, `animate-fadeIn`
-- Gradient utilities from tokens
-
-**Global Utility** (`.container-responsive`):
-
-```css
-max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+```
+src/
+├── components/
+│   ├── layout/           # Header, Container, FloatingActions
+│   ├── ui/               # Button, Input, Card, Modal (reusable)
+│   └── questionnaire/    # Stage1Form, Stage2Form, Stage3Form
+├── lib/
+│   ├── store/            # Zustand stores
+│   ├── types/            # TypeScript definitions
+│   └── utils/            # cn(), validators
+└── app/
+    ├── page.tsx          # Homepage (SSG)
+    └── api/              # API routes (planned)
 ```
 
-### Type System Structure
-
-**Questionnaire Types** (`src/lib/types/questionnaire.ts`):
-
-The 3-stage data model mirrors the PRD requirements:
-
-1. **Stage1Data**: Service overview (name, features, screens, user journey, tone)
-2. **Stage2Data**: Design elements (themes, colors, typography, UI details)
-3. **Stage3Data**: Technical constraints (tech stack, APIs, auth, edge cases)
-
-All types are strictly typed interfaces - use these when implementing forms to ensure type safety.
-
-### PRD Generation Flow (Planned)
-
-1. User fills 3-stage questionnaire → Zustand store (auto-persisted)
-2. Click "PRD 생성" button → FloatingActions triggers modal
-3. Modal confirms inputs → POST to `/api/prd/generate`
-4. API formats data → Gemini API prompt → Streams markdown response
-5. Display preview → Allow download (.md or .pdf)
-6. Optionally save to Supabase (if authenticated)
-
-### Styling Patterns
-
-**Component Styling Convention**:
+### Type System
 
 ```typescript
-// Use cn() for all className composition
-import { cn } from "@/lib/utils/cn";
+// src/lib/types/questionnaire.ts
+// All form data follows these types
 
-const variants = {
-  primary:
-    "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-interactive-sm hover:shadow-interactive-md transition-all duration-normal",
-  outline:
-    "border-2 border-neutral-300 bg-transparent hover:border-brand-500 hover:bg-brand-50 transition-all duration-normal",
-  ghost:
-    "bg-transparent hover:bg-neutral-100 active:scale-98 transition-all duration-fast",
-};
+interface Stage1Data {
+  serviceName: string;
+  features: string[];
+  screens: string[];
+  userJourney: string;
+  tone: "formal" | "casual" | "friendly";
+}
 
-// Interactive states should include animations
-const interactiveClasses =
-  "hover:scale-102 active:scale-98 transition-transform duration-normal ease-spring";
+interface Stage2Data {
+  /* Design elements */
+}
+interface Stage3Data {
+  /* Technical constraints */
+}
+```
 
+---
+
+## 🎨 Design System Rules
+
+### Design Tokens (`tokens.json`)
+
+```javascript
+// All styling references tokens.json
+import tokens from "@/tokens.json";
+
+// ✅ Correct
+className = "bg-brand-500 shadow-interactive-md transition-normal";
+
+// ❌ Wrong (hard-coded values)
+className = "bg-blue-500 shadow-lg duration-300";
+```
+
+### Animation Patterns
+
+**Progressive Question Reveal**:
+
+```typescript
+// Questions appear sequentially (when user completes previous question)
 <div
-  className={cn(baseStyles, variants[variant], interactiveClasses, className)}
-/>;
+  className="animate-slideInUp opacity-0"
+  style={{
+    animationDelay: `${index * 150}ms`,
+    animationFillMode: "forwards",
+  }}
+>
+  <Question />
+</div>
 ```
 
-**Animation Implementation**:
+**Interactive States**:
 
 ```typescript
-// Progressive reveal pattern for questions
-const QuestionItem = ({ index, children }) => (
-  <div
-    className="animate-slideInUp opacity-0"
-    style={{
-      animationDelay: `${index * 150}ms`,
-      animationFillMode: "forwards",
-    }}
-  >
-    {children}
-  </div>
-);
+// Input focus
+className =
+  "focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring";
 
-// Focus state with glow effect
-<input className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring" />;
+// Button hover
+className =
+  "hover:scale-102 active:scale-98 transition-transform duration-normal";
 ```
 
-**Responsive Design**:
+### Responsive Utilities
 
-- Mobile-first approach (default → sm → md → lg breakpoints)
-- Use Tailwind responsive prefixes: `sm:`, `md:`, `lg:`
-- All layouts must support 320px to 1920px+ viewports
-- Adjust animation complexity based on screen size (reduce motion on mobile if needed)
+```typescript
+// Mobile-first approach
+className = "px-4 sm:px-6 lg:px-8"; // 320px → 640px → 1024px
 
-### Future Integration Points
+// Container wrapper
+className = "container-responsive"; // max-w-7xl + responsive padding
+```
 
-**Google OAuth** (via Supabase):
+---
 
-- Optional for PRD generation (non-authenticated users allowed)
-- Required for history/saving features
-- Auth state should be managed in a separate store or context
+## 🧪 Testing Standards
 
-**Gemini API**:
+### Test Structure
 
-- Endpoint: `app/api/generate/route.ts` (to be created)
-- Use Vercel AI SDK's `streamText` for real-time generation
-- Include error handling for rate limits and network issues
+```typescript
+// Component Test Template
+import { render, screen, fireEvent } from "@testing-library/react";
 
-**Database Schema** (Supabase):
+describe("ComponentName", () => {
+  // Happy Path
+  it("should render with default props", () => {
+    render(<Component />);
+    expect(screen.getByText("Expected")).toBeInTheDocument();
+  });
 
-- `users` table: Google OAuth integration
-- `prd_documents` table: user_id (nullable), questionnaire_data (JSONB), generated_prd (TEXT)
+  // User Interaction
+  it("should handle click event", () => {
+    const handleClick = vi.fn();
+    render(<Component onClick={handleClick} />);
+    fireEvent.click(screen.getByRole("button"));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
 
-## Key Files Reference
+  // Edge Case
+  it("should disable button when loading", () => {
+    render(<Component isLoading />);
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+});
+```
 
-- `tokens.json`: Complete design token system - colors, typography, spacing, animations, shadows
-- `prompt/initial.md`: Original PRD specification with detailed requirements
-- `process/checklist.md`: Development task breakdown and progress tracking
-- `src/lib/types/questionnaire.ts`: Source of truth for all data structures
-- `src/lib/store/useQuestionnaireStore.ts`: Global state management
-- `tailwind.config.ts`: Tailwind configuration extending design tokens
-- `CLAUDE.md`: This file - architectural guidance and patterns
+### Mocking Convention
 
-## Development Notes
+```typescript
+// API mocking
+vi.mock("@/lib/api", () => ({
+  generatePRD: vi.fn().mockResolvedValue({ content: "PRD" }),
+}));
 
-**Programming Paradigm**: Prefer functional programming and OOP principles (as specified in initial.md), use clean architecture
+// Zustand store mocking
+vi.mock("@/lib/store/useQuestionnaireStore", () => ({
+  useQuestionnaireStore: vi.fn(() => ({
+    stage1: { serviceName: "Test" },
+    updateStage1: vi.fn(),
+  })),
+}));
+```
 
-**UI/UX Philosophy**:
+---
 
-- **Minimalist & Refined**: Clean layouts with purposeful whitespace, inspired by Lovable and Bolt.new
-- **Progressive Disclosure**: Reveal questions sequentially as user progresses - don't overwhelm with all questions at once
-- **Delightful Interactions**: Use subtle animations (slide, fade, scale) to create smooth, engaging experience
-- **Visual Feedback**: Immediate response to user actions (hover states, focus glows, micro-interactions)
-- **Gradients & Depth**: Use gradient backgrounds sparingly for headers/CTAs, shadows for elevation hierarchy
-- **Micro-animations**: Button hover states, input focus effects, stage transitions should feel fluid and responsive
+## 🚨 Error Handling Protocol
 
-**Korean Language**: All UI text, error messages, and user-facing content should be in Korean
+### Error Classification
 
-**Form Implementation**: Use React Hook Form with Zod for all questionnaire stages - schemas should validate against type definitions
+```yaml
+Syntax Error:
+  - Fix immediately
+  - Run: npm run lint
 
-**SSG Strategy**: Homepage (`app/page.tsx`) should be statically generated for SEO optimization
+Type Error:
+  - Check: src/lib/types/
+  - Fix type definitions
+  - Run: npx tsc --noEmit
+
+Test Failure:
+  - If RED phase → Expected (continue)
+  - If GREEN phase → Bug (fix)
+  - If Refactor phase → Regression (revert)
+
+Build Error:
+  - Check: next.config.js, tailwind.config.ts
+  - Verify: All imports valid
+  - Run: npm run build
+```
+
+---
+
+## 📊 Status Reporting Format
+
+Report in this format after completing each task:
+
+````markdown
+## Task Completion Report
+
+### Task: {task-name}
+
+**Type**: Feature | Bug Fix | Refactor | Docs
+**Status**: ✅ Complete | ⚠️ Partial | ❌ Failed
+
+### Changes
+
+- 📝 Files Modified: {count}
+- ✅ Tests Added: {count}
+- 🎨 Design Tokens Applied: Yes/No
+
+### Test Results
+
+```bash
+npm test
+✓ {N} tests passing
+✗ {N} tests failing (if any)
+```
+````
+
+### Next Steps
+
+- [ ] Task 1
+- [ ] Task 2
+
+````
+
+---
+
+## 🔗 Critical File References
+
+| File | Purpose | When to Read |
+|------|---------|--------------|
+| `tokens.json` | Design system | Every styling task |
+| `src/lib/types/questionnaire.ts` | Type definitions | Every form implementation |
+| `process/checklist.md` | Task tracking | Start/end of each task |
+| `docs/scenarios/*.md` | Test scenarios | Before writing tests |
+| `prompt/initial.md` | Original PRD | When requirements unclear |
+
+---
+
+## 🎯 Success Criteria
+
+All tasks must meet these conditions to be considered complete:
+
+- ✅ All tests passing (`npm test`)
+- ✅ No TypeScript errors (`npx tsc --noEmit`)
+- ✅ No ESLint warnings (`npm run lint`)
+- ✅ Design tokens applied (no hard-coded values)
+- ✅ Korean language used (all UI text)
+- ✅ Responsive design (320px ~ 1920px+)
+- ✅ Documentation updated (`process/checklist.md`)
+
+---
+
+## 🔄 Iterative Improvement
+
+This document itself is subject to improvement:
+
+- If protocol is inefficient → Propose improvements
+- When new patterns discovered → Suggest document updates
+- When instructions unclear → Request clarification
+
+**Update Protocol**:
+```yaml
+When to Update CLAUDE.md:
+  - New workflow pattern discovered
+  - Repeated manual intervention needed
+  - Protocol execution failure rate > 20%
+
+How to Update:
+  - Propose changes in PR description
+  - Get approval before merging
+  - Update related docs (README, checklist)
+````
+
+---
+
+## 🌐 Language Convention
+
+**Korean UI Text**: All user-facing content must be in Korean
+
+```typescript
+// ✅ Correct
+<Button>제출하기</Button>;
+const errorMessage = "입력값이 유효하지 않습니다";
+
+// ❌ Wrong
+<Button>Submit</Button>;
+const errorMessage = "Invalid input";
+```
+
+**Code & Comments**: English for code, comments, and technical documentation
+
+```typescript
+// ✅ Correct
+// Validate user input before submission
+const validateInput = (value: string) => { ... }
+
+// ❌ Wrong (Korean comments in code)
+// 사용자 입력 검증
+const validateInput = (value: string) => { ... }
+```
+
+**Exception**: This CLAUDE.md and technical docs can be in English for international collaboration
