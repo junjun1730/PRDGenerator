@@ -57,6 +57,42 @@ const themeOptions = [
     description: '복고풍의 감성적인 느낌',
     icon: '📻',
   },
+  {
+    value: '따뜻한',
+    label: '따뜻한',
+    description: '포근하고 감성적인 분위기',
+    icon: '☀️',
+  },
+  {
+    value: '다크',
+    label: '다크',
+    description: '세련되고 강렬한 어두운 톤',
+    icon: '🌙',
+  },
+  {
+    value: '글래스모피즘',
+    label: '글래스모피즘',
+    description: '투명하고 부드러운 유리 효과',
+    icon: '🔮',
+  },
+  {
+    value: '미래지향적',
+    label: '미래지향적',
+    description: 'SF적이고 혁신적인 느낌',
+    icon: '🚀',
+  },
+  {
+    value: '대담한',
+    label: '대담한',
+    description: '강렬하고 임팩트 있는 디자인',
+    icon: '⚡',
+  },
+  {
+    value: '네온',
+    label: '네온',
+    description: '생생하고 화려한 네온 색감',
+    icon: '🌟',
+  },
 ];
 
 export default function ThemeSelector({

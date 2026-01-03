@@ -2,17 +2,14 @@
 
 import { Control } from 'react-hook-form';
 import Input from '@/components/ui/Input';
-import Toggle from '@/components/ui/Toggle';
 import { cn } from '@/lib/utils/cn';
 
 interface ColorSystemInputProps {
   control: Control<any>;
   primaryValue: string;
   backgroundValue: string;
-  darkModeValue: boolean;
   onPrimaryChange: (value: string) => void;
   onBackgroundChange: (value: string) => void;
-  onDarkModeChange: (value: boolean) => void;
   errors?: {
     primary?: string;
     background?: string;
@@ -23,10 +20,8 @@ export default function ColorSystemInput({
   control,
   primaryValue,
   backgroundValue,
-  darkModeValue,
   onPrimaryChange,
   onBackgroundChange,
-  onDarkModeChange,
   errors,
 }: ColorSystemInputProps) {
   return (
@@ -106,16 +101,6 @@ export default function ColorSystemInput({
             style={{ backgroundColor: backgroundValue || '#ffffff' }}
           />
         </div>
-      </div>
-
-      {/* Dark Mode Toggle */}
-      <div className="pt-2 border-t border-neutral-200">
-        <Toggle
-          checked={darkModeValue}
-          onChange={(e) => onDarkModeChange(e.target.checked)}
-          label="다크 모드 지원"
-          description="다크 모드를 지원하는 디자인을 원하시나요?"
-        />
       </div>
 
       {/* Preview Card */}

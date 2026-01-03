@@ -90,7 +90,6 @@ export default function Stage1Form() {
           placeholder="예: 홈 화면, 타임캡슐 작성 화면, 캡슐 목록, 마이페이지 등"
           helperText="서비스의 주요 화면들을 설명해주세요"
           error={form.formState.errors.mainScreens?.message}
-          maxCharacters={9999}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />
@@ -104,7 +103,6 @@ export default function Stage1Form() {
           placeholder="예: 회원가입 → 타임캡슐 작성 → 수신일 선택 → 발송 예약 → 알림 받기 → 캡슐 열어보기"
           helperText="사용자가 서비스를 이용하는 전체 과정을 설명해주세요"
           error={form.formState.errors.userJourney?.message}
-          maxCharacters={9999}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />
@@ -118,35 +116,10 @@ export default function Stage1Form() {
           placeholder="예: 따뜻하고 감성적인, 회상을 불러일으키는 느낌, 친근하면서도 프로페셔널한 느낌"
           helperText="서비스에서 전달하고 싶은 전체적인 분위기와 느낌을 자유롭게 설명해주세요"
           error={form.formState.errors.serviceMood?.message}
-          maxCharacters={9999}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />
       </QuestionWrapper>
-
-      {/* Completion Indicator */}
-      {visibleQuestions.every((v) => v) && (
-        <div className="pt-6 border-t border-neutral-200 opacity-0 animate-fadeIn">
-          <div className="flex items-center gap-2 text-success-600">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-sm font-medium">
-              1단계 질문을 모두 완료했습니다! 2단계로 이동해주세요.
-            </p>
-          </div>
-        </div>
-      )}
     </form>
   );
 }

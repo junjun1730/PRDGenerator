@@ -35,7 +35,6 @@ export const stage2Schema = z
     colorSystem: z.object({
       primary: z.string(),
       background: z.string(),
-      darkModeSupport: z.boolean(),
     }),
 
     typography: z.enum(['gothic', 'serif', 'custom']).optional(),

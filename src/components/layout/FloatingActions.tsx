@@ -26,9 +26,15 @@ export default function FloatingActions() {
       // TODO: Implement PRD generation modal in Phase 4
       alert("PRD 생성 기능은 다음 단계에서 구현됩니다.");
     } else {
-      // Show incomplete stages modal
+      // Show confirmation for incomplete input
       setShowIncompleteModal(true);
     }
+  };
+
+  const handleProceedWithIncomplete = () => {
+    setShowIncompleteModal(false);
+    // TODO: Implement PRD generation modal in Phase 4
+    alert("PRD 생성 기능은 다음 단계에서 구현됩니다.");
   };
 
   const incompleteStages = getIncompleteStages(store);
@@ -100,31 +106,28 @@ export default function FloatingActions() {
         </div>
       </Modal>
 
-      {/* Incomplete Stages Modal */}
+      {/* Incomplete Input Confirmation Modal */}
       <Modal
         isOpen={showIncompleteModal}
         onClose={() => setShowIncompleteModal(false)}
-        title="단계 완료 필요"
+        title="입력 확인"
         size="md"
       >
         <div className="space-y-4">
-          <p className="text-neutral-700">
-            모든 단계를 완료한 후 PRD를 생성할 수 있습니다.
+          <p className="text-neutral-700 text-base">
+            모든 질문에 답하지 않았습니다. 이대로 진행하시겠습니까?
           </p>
 
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-neutral-700">
-              미완료 단계:
-            </p>
-            <ul className="space-y-2">
-              {incompleteStages.map((stage) => (
-                <li key={stage}>
-                  <button
-                    onClick={() => handleNavigateToStage(stage)}
-                    className="flex items-center gap-2 w-full p-3 text-left rounded-lg border-2 border-error-200 bg-error-50 hover:bg-error-100 hover:border-error-300 transition-all duration-normal"
-                  >
+          {incompleteStages.length > 0 && (
+            <div className="space-y-2 p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+              <p className="text-sm font-medium text-neutral-600">
+                답변하지 않은 단계:
+              </p>
+              <ul className="space-y-1">
+                {incompleteStages.map((stage) => (
+                  <li key={stage} className="flex items-center gap-2">
                     <svg
-                      className="h-5 w-5 text-error-600 flex-shrink-0"
+                      className="h-4 w-4 text-neutral-400 flex-shrink-0"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -133,24 +136,27 @@ export default function FloatingActions() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        d="M9 5l7 7-7 7"
                       />
                     </svg>
-                    <span className="text-sm font-medium text-error-700">
+                    <span className="text-sm text-neutral-600">
                       {getStageName(stage)}
                     </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="flex gap-3 justify-end pt-2">
             <Button
               variant="outline"
               onClick={() => setShowIncompleteModal(false)}
             >
-              닫기
+              취소
+            </Button>
+            <Button variant="primary" onClick={handleProceedWithIncomplete}>
+              진행하기
             </Button>
           </div>
         </div>

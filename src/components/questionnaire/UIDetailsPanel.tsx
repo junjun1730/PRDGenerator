@@ -29,7 +29,7 @@ export default function UIDetailsPanel({
   const buttonRadiusOptions: RadioOption[] = [
     {
       value: 'none',
-      label: '각진 (0px)',
+      label: '각진',
       description: '모서리가 직각인 디자인',
       visualExample: (
         <div className="w-24 h-10 bg-brand-500 rounded-none flex items-center justify-center text-white text-xs font-medium">
@@ -39,7 +39,7 @@ export default function UIDetailsPanel({
     },
     {
       value: 'sm',
-      label: '약간 둥근 (4px)',
+      label: '약간 둥근',
       description: '살짝 부드러운 모서리',
       visualExample: (
         <div className="w-24 h-10 bg-brand-500 rounded flex items-center justify-center text-white text-xs font-medium">
@@ -49,7 +49,7 @@ export default function UIDetailsPanel({
     },
     {
       value: 'md',
-      label: '중간 둥근 (8px)',
+      label: '중간 둥근',
       description: '적당히 둥근 모서리',
       visualExample: (
         <div className="w-24 h-10 bg-brand-500 rounded-lg flex items-center justify-center text-white text-xs font-medium">
@@ -59,7 +59,7 @@ export default function UIDetailsPanel({
     },
     {
       value: 'lg',
-      label: '많이 둥근 (12px)',
+      label: '많이 둥근',
       description: '상당히 둥근 모서리',
       visualExample: (
         <div className="w-24 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white text-xs font-medium">
@@ -69,7 +69,7 @@ export default function UIDetailsPanel({
     },
     {
       value: 'full',
-      label: '완전 둥근 (pill)',
+      label: '완전 둥근',
       description: '캡슐 모양',
       visualExample: (
         <div className="w-24 h-10 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-medium">

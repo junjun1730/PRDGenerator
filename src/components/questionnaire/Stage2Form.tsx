@@ -110,15 +110,11 @@ export default function Stage2Form() {
           control={form.control}
           primaryValue={form.watch('colorSystem.primary') || ''}
           backgroundValue={form.watch('colorSystem.background') || ''}
-          darkModeValue={form.watch('colorSystem.darkModeSupport') || false}
           onPrimaryChange={(value) =>
             form.setValue('colorSystem.primary', value)
           }
           onBackgroundChange={(value) =>
             form.setValue('colorSystem.background', value)
-          }
-          onDarkModeChange={(value) =>
-            form.setValue('colorSystem.darkModeSupport', value)
           }
           errors={{
             primary: form.formState.errors.colorSystem?.primary?.message,
@@ -188,35 +184,10 @@ export default function Stage2Form() {
           placeholder="예: https://example.com 과 유사한 느낌, 애플 디자인 가이드라인 참고"
           helperText="참고하고 싶은 디자인이나 서비스가 있다면 작성해주세요"
           error={form.formState.errors.references?.message}
-          maxCharacters={9999}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />
       </QuestionWrapper>
-
-      {/* Completion Indicator */}
-      {visibleQuestions.every((v) => v) && (
-        <div className="pt-6 border-t border-neutral-200 opacity-0 animate-fadeIn">
-          <div className="flex items-center gap-2 text-success-600">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-sm font-medium">
-              2단계 질문을 모두 완료했습니다! 3단계로 이동해주세요.
-            </p>
-          </div>
-        </div>
-      )}
     </form>
   );
 }

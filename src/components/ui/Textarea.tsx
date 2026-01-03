@@ -81,36 +81,22 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           maxLength={maxCharacters}
           {...props}
         />
-        <div className="flex items-center justify-between mt-1.5">
-          <div className="flex-1">
-            {error && (
-              <p
-                id={`${textareaId}-error`}
-                className="text-sm text-red-600"
-                role="alert"
-              >
-                {error}
-              </p>
-            )}
-            {helperText && !error && (
-              <p
-                id={`${textareaId}-helper`}
-                className="text-sm text-neutral-500"
-              >
-                {helperText}
-              </p>
-            )}
-          </div>
-          {maxCharacters && (
+        <div className="mt-1.5">
+          {error && (
             <p
-              className={cn(
-                'text-sm',
-                characterCount > maxCharacters
-                  ? 'text-red-600'
-                  : 'text-neutral-500'
-              )}
+              id={`${textareaId}-error`}
+              className="text-sm text-red-600"
+              role="alert"
             >
-              {characterCount}/{maxCharacters}
+              {error}
+            </p>
+          )}
+          {helperText && !error && (
+            <p
+              id={`${textareaId}-helper`}
+              className="text-sm text-neutral-500"
+            >
+              {helperText}
             </p>
           )}
         </div>

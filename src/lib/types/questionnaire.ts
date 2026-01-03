@@ -14,7 +14,6 @@ export interface Stage2Data {
   colorSystem: {
     primary: string;
     background: string;
-    darkModeSupport: boolean;
   };
   typography: 'gothic' | 'serif' | 'custom';
   customFont?: string;

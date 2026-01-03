@@ -10,7 +10,7 @@ import Textarea from '@/components/ui/Textarea';
 import RadioGroup, { RadioOption } from '@/components/ui/RadioGroup';
 import Toggle from '@/components/ui/Toggle';
 import DynamicArrayInput from './DynamicArrayInput';
-import TechStackSelector from './TechStackSelector';
+import TechStackInput from './TechStackInput';
 import type { Stage3Data } from '@/lib/types/questionnaire';
 
 export default function Stage3Form() {
@@ -43,8 +43,10 @@ export default function Stage3Form() {
     setVisibleQuestions([
       true, // Tech stack always visible
       techStack &&
-        techStack.frontend?.length >= 1 &&
-        techStack.backend?.length >= 1,
+        (techStack.frontend?.length >= 1 ||
+          techStack.database?.length >= 1 ||
+          techStack.backend?.length >= 1 ||
+          techStack.other?.length >= 1),
       dataManagement !== undefined,
       true, // External APIs optional, so always show after data management
       authMethod !== undefined && authMethod !== null,
@@ -70,29 +72,34 @@ export default function Stage3Form() {
       label: '2단계 인증',
       description: 'SMS, OTP 등 추가 인증 단계',
     },
-    {
-      value: 'biometric',
-      label: '생체 인증',
-      description: '지문, 얼굴 인식 등 생체 인증',
-    },
   ];
 
   return (
     <form className="space-y-8">
       {/* Question 1: Tech Stack */}
       <QuestionWrapper isVisible={visibleQuestions[0]} delay={0}>
-        <TechStackSelector
+        <TechStackInput
           frontend={form.watch('techStack.frontend') || []}
+          database={form.watch('techStack.database') || []}
           backend={form.watch('techStack.backend') || []}
+          other={form.watch('techStack.other') || []}
           onFrontendChange={(selected) =>
             form.setValue('techStack.frontend', selected)
+          }
+          onDatabaseChange={(selected) =>
+            form.setValue('techStack.database', selected)
           }
           onBackendChange={(selected) =>
             form.setValue('techStack.backend', selected)
           }
+          onOtherChange={(selected) =>
+            form.setValue('techStack.other', selected)
+          }
           errors={{
             frontend: form.formState.errors.techStack?.frontend?.message,
+            database: form.formState.errors.techStack?.database?.message,
             backend: form.formState.errors.techStack?.backend?.message,
+            other: form.formState.errors.techStack?.other?.message,
           }}
         />
       </QuestionWrapper>
@@ -160,7 +167,7 @@ export default function Stage3Form() {
           options={authMethodOptions}
           value={form.watch('authMethod')}
           onChange={(value) =>
-            form.setValue('authMethod', value as 'email' | 'two-factor' | 'biometric')
+            form.setValue('authMethod', value as 'email' | 'two-factor')
           }
           error={form.formState.errors.authMethod?.message}
         />
@@ -172,37 +179,12 @@ export default function Stage3Form() {
           {...form.register('edgeCases')}
           label="예외 상황 및 엣지 케이스 대응 정책"
           placeholder="예: 네트워크 오류 시 로컬 저장 후 재시도, 중복 요청 방지, 동시 편집 충돌 해결 등"
-          helperText="서비스에서 발생할 수 있는 예외 상황과 처리 방법을 설명해주세요 (최소 20자)"
+          helperText="서비스에서 발생할 수 있는 예외 상황과 처리 방법을 설명해주세요"
           error={form.formState.errors.edgeCases?.message}
-          maxCharacters={1000}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />
       </QuestionWrapper>
-
-      {/* Completion Indicator */}
-      {visibleQuestions.every((v) => v) && (
-        <div className="pt-6 border-t border-neutral-200 opacity-0 animate-fadeIn">
-          <div className="flex items-center gap-2 text-success-600">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-sm font-medium">
-              3단계 질문을 모두 완료했습니다! 이제 PRD를 생성할 수 있습니다.
-            </p>
-          </div>
-        </div>
-      )}
     </form>
   );
 }
