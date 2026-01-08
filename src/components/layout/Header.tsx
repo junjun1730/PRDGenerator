@@ -1,6 +1,12 @@
-import Button from '@/components/ui/Button';
+'use client';
+
+import LoginButton from '@/components/auth/LoginButton';
+import UserMenu from '@/components/auth/UserMenu';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 
 export default function Header() {
+  const { user } = useAuthStore();
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-neutral-200 shadow-soft">
       <div className="container-responsive">
@@ -12,11 +18,9 @@ export default function Header() {
             </h1>
           </div>
 
-          {/* Login Button - Placeholder for future auth */}
+          {/* Auth Buttons */}
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" disabled>
-              로그인 (준비중)
-            </Button>
+            {user ? <UserMenu /> : <LoginButton />}
           </div>
         </div>
       </div>

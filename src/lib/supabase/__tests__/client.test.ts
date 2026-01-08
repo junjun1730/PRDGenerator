@@ -1,13 +1,44 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createBrowserClient } from '@/lib/supabase/client';
-import { mockSupabaseSSR, resetSupabaseMocks } from '@/lib/__tests__/mocks/supabase';
+import { createBrowserClient, resetClientForTesting } from '@/lib/supabase/client';
+import { resetSupabaseMocks } from '@/lib/__tests__/mocks/supabase';
 
 // Mock @supabase/ssr module
-vi.mock('@supabase/ssr', () => mockSupabaseSSR);
+vi.mock('@supabase/ssr', () => ({
+  createBrowserClient: vi.fn(() => ({
+    auth: {
+      getSession: vi.fn().mockResolvedValue({
+        data: { session: null },
+        error: null,
+      }),
+      getUser: vi.fn().mockResolvedValue({
+        data: { user: null },
+        error: null,
+      }),
+    },
+    from: vi.fn((table: string) => ({
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+    })),
+    storage: {
+      from: vi.fn((bucket: string) => ({
+        upload: vi.fn().mockResolvedValue({
+          data: { path: 'mock-path' },
+          error: null,
+        }),
+      })),
+    },
+  })),
+}));
+
+// Get reference to the mocked function for assertions
+const mockSupabaseSSR = await vi.importMock<any>('@supabase/ssr');
 
 describe('Supabase Browser Client', () => {
   beforeEach(() => {
     resetSupabaseMocks();
+    resetClientForTesting();
   });
 
   afterEach(() => {

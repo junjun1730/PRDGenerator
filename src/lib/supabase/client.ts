@@ -4,6 +4,14 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 let client: SupabaseClient | null = null;
 
 /**
+ * Reset client instance for testing purposes only
+ * @internal
+ */
+export function resetClientForTesting() {
+  client = null;
+}
+
+/**
  * Create Supabase browser client (singleton pattern)
  * Used in client components and browser context
  */
