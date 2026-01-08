@@ -240,7 +240,7 @@ export async function getUserPrdDocuments(
     // Validate pagination
     const paginationValidation = paginationSchema.safeParse({ page, limit });
     if (!paginationValidation.success) {
-      const error = paginationValidation.error.errors[0];
+      const error = paginationValidation.error.issues[0];
       return { data: null, count: 0, error: new DbError(error.message) };
     }
 

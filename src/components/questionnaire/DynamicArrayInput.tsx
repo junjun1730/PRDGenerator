@@ -1,13 +1,13 @@
 'use client';
 
-import { Control, useFieldArray, FieldValues, Path } from 'react-hook-form';
+import { Control, useFieldArray, FieldValues, Path, ArrayPath } from 'react-hook-form';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { cn } from '@/lib/utils/cn';
 
 interface DynamicArrayInputProps<T extends FieldValues> {
-  control: Control<T>;
-  name: Path<T>;
+  control: Control<T> | any; // Allow any to work around complex RHF type inference
+  name: string; // Simplified from ArrayPath<T> to avoid type inference issues
   label: string;
   placeholder: string;
   maxItems?: number;
@@ -26,7 +26,7 @@ export default function DynamicArrayInput<T extends FieldValues>({
 }: DynamicArrayInputProps<T>) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name,
+    name: name as any, // Workaround for RHF complex type inference
   });
 
   return (

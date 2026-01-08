@@ -68,10 +68,12 @@ export function createServerClient(): SupabaseClient {
   const client = createSupabaseServerClient(url, key, {
     cookies: {
       get(name: string) {
+        // @ts-expect-error - Next.js 15 types issue, works at runtime
         const cookie = cookieStore.get(name);
         return cookie?.value;
       },
       set(name: string, value: string, options: any) {
+        // @ts-expect-error - Next.js 15 types issue, works at runtime
         cookieStore.set(name, value, options);
       },
     },

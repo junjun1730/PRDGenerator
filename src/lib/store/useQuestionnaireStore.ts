@@ -21,7 +21,6 @@ const initialStage2: Stage2Data = {
   colorSystem: {
     primary: '',
     background: '',
-    darkModeSupport: false,
   },
   typography: 'gothic',
   customFont: '',

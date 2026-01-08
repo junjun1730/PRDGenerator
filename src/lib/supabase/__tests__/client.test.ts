@@ -261,6 +261,7 @@ describe('Supabase Browser Client', () => {
       // Arrange
       process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://localhost:54321';
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
+      // @ts-expect-error - Vitest allows env mutation for testing
       process.env.NODE_ENV = 'development';
 
       // Act & Assert
@@ -271,6 +272,7 @@ describe('Supabase Browser Client', () => {
       // Arrange
       process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://test-project.supabase.co';
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
+      // @ts-expect-error - Vitest allows env mutation for testing
       process.env.NODE_ENV = 'production';
 
       // Act & Assert

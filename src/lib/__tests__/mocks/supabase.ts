@@ -242,9 +242,9 @@ export const createMockSupabaseClient = () => {
             // Apply ordering
             if (orderBy) {
               documents.sort((a: any, b: any) => {
-                const aVal = a[orderBy.column];
-                const bVal = b[orderBy.column];
-                if (orderBy.ascending) {
+                const aVal = a[orderBy!.column];
+                const bVal = b[orderBy!.column];
+                if (orderBy!.ascending) {
                   return aVal > bVal ? 1 : -1;
                 } else {
                   return aVal < bVal ? 1 : -1;
@@ -358,6 +358,9 @@ export const resetSupabaseMocks = () => {
   mockDocumentCounter = 0;
 
   // Reset environment variables to default test values
+  // Note: process.env properties are read-only in TypeScript strict mode
+  // Environment variables should be set by the test runner (Vitest) configuration
+  // @ts-expect-error - Vitest allows env mutation for testing
   process.env.NODE_ENV = 'test';
   process.env.VITEST = 'true';
   process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test-project.supabase.co';

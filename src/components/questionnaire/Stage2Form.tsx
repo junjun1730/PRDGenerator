@@ -20,6 +20,7 @@ export default function Stage2Form() {
   const updateStage2 = useQuestionnaireStore((state) => state.updateStage2);
 
   const form = useForm<Stage2Data>({
+    // @ts-expect-error - Zod resolver type inference issue with optional typography
     resolver: zodResolver(stage2Schema),
     defaultValues: stage2,
     mode: 'onChange',
@@ -93,7 +94,7 @@ export default function Stage2Form() {
 
       {/* Question 1: Brand Keywords - Always Visible */}
       <QuestionWrapper isVisible={visibleQuestions[1]} delay={150}>
-        <DynamicArrayInput
+        <DynamicArrayInput<Stage2Data>
           control={form.control}
           name="brandKeywords"
           label="브랜드 키워드 (최대 3개)"

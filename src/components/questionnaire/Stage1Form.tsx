@@ -71,7 +71,7 @@ export default function Stage1Form() {
 
       {/* Question 2: Core Features */}
       <QuestionWrapper isVisible={visibleQuestions[1]} delay={150}>
-        <DynamicArrayInput
+        <DynamicArrayInput<Stage1Data>
           control={form.control}
           name="coreFeatures"
           label="핵심 기능 (최대 3개)"

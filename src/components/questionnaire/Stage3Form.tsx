@@ -141,7 +141,7 @@ export default function Stage3Form() {
       {/* Question 3: External APIs */}
       <QuestionWrapper isVisible={visibleQuestions[2]} delay={300}>
         <div className="space-y-4">
-          <DynamicArrayInput
+          <DynamicArrayInput<Stage3Data>
             control={form.control}
             name="externalAPIs"
             label="외부 API 연동 (선택사항)"
@@ -173,14 +173,14 @@ export default function Stage3Form() {
         />
       </QuestionWrapper>
 
-      {/* Question 5: Edge Cases */}
+      {/* Question 5: Exception Handling */}
       <QuestionWrapper isVisible={visibleQuestions[4]} delay={600}>
         <Textarea
-          {...form.register('edgeCases')}
+          {...form.register('exceptionHandling')}
           label="예외 상황 및 엣지 케이스 대응 정책"
           placeholder="예: 네트워크 오류 시 로컬 저장 후 재시도, 중복 요청 방지, 동시 편집 충돌 해결 등"
           helperText="서비스에서 발생할 수 있는 예외 상황과 처리 방법을 설명해주세요"
-          error={form.formState.errors.edgeCases?.message}
+          error={form.formState.errors.exceptionHandling?.message}
           autoResize
           className="focus:shadow-glow-md focus:scale-102 transition-all duration-normal ease-spring"
         />

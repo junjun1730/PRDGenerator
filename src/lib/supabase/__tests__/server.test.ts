@@ -171,6 +171,7 @@ describe('Supabase Server Client', () => {
       // Arrange
       process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test-project.supabase.co';
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
+      // @ts-expect-error - Mock allows undefined return for missing cookies
       mockCookies.get.mockReturnValue(undefined);
 
       // Act
@@ -292,6 +293,7 @@ describe('Supabase Server Client', () => {
       // Arrange
       process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://test-project.supabase.co';
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
+      // @ts-expect-error - Vitest allows env mutation for testing
       process.env.NODE_ENV = 'production';
 
       // Act & Assert
