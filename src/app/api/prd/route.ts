@@ -84,11 +84,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Get documents
-    const { data, count, error } = await getUserPrdDocuments(
-      user.id,
-      parsed.data.page,
-      parsed.data.limit
-    );
+    const { data, count, error } = await getUserPrdDocuments(user.id, {
+      page: parsed.data.page,
+      limit: parsed.data.limit,
+    });
 
     if (error) {
       throw new DbError('문서 목록 조회에 실패했습니다');

@@ -1,8 +1,8 @@
 # AI PRD Generator - Development Checklist
 
-> **Last Updated**: 2026-01-08 21:40
-> **Current Phase**: Phase 2 - Backend & Database (92% Complete)
-> **Overall Progress**: Phase 1 (100%) + Phase 2-1 (100%) + Phase 2-2 (66%) + Phase 2-3 (100%)
+> **Last Updated**: 2026-01-09 16:30
+> **Current Phase**: Phase 2 - Backend & Database (100% Complete)
+> **Overall Progress**: Phase 1 (100%) + Phase 2-1 (100%) + Phase 2-2 (66%) + Phase 2-3 (100%) + Phase 2-4 (100%)
 
 ---
 
@@ -18,11 +18,11 @@
 - ✅ Multi-step Navigation
 - ✅ Responsive UI (320px ~ 1920px+)
 
-### Phase 2: Backend & Database 🔄 **92% Complete**
+### Phase 2: Backend & Database ✅ **100% Complete**
 - ✅ **2-1. Supabase Setup** (100%)
 - ✅ **2-2. Database Schema** (66%)
 - ✅ **2-3. Google OAuth** (100%)
-- ⏳ **2-4. API Routes** (0%)
+- ✅ **2-4. API Routes** (100%)
 
 ### Phase 3: AI Integration ⏳ **0% Complete**
 - ⏳ Gemini API Integration
@@ -172,6 +172,51 @@
 
 **Implementation Date**: 2026-01-08
 **Completion Date**: 2026-01-08 21:17
+
+---
+
+#### Phase 2-4: API Routes
+**Status**: ✅ **100% Complete**
+
+**Files Created**:
+- ✅ `docs/scenarios/api-routes.md` - Test scenarios (400+ lines, 30+ scenarios)
+- ✅ `src/lib/api/errors.ts` - Error handling infrastructure
+- ✅ `src/lib/api/middleware.ts` - Auth middleware
+- ✅ `src/lib/api/response.ts` - Response helpers
+- ✅ `src/lib/api/validation.ts` - Zod validation schemas
+- ✅ `src/app/api/prd/route.ts` - POST, GET (list)
+- ✅ `src/app/api/prd/[id]/route.ts` - GET, PUT, DELETE
+- ✅ Test files: 4 files, 52 tests (52 passing, 100%)
+
+**Implemented Endpoints**:
+```
+POST   /api/prd        - 문서 생성 (익명 허용)
+GET    /api/prd        - 문서 목록 (인증 필수, 페이지네이션)
+GET    /api/prd/[id]   - 단일 문서 조회
+PUT    /api/prd/[id]   - 문서 수정 (인증 + 소유권 필수)
+DELETE /api/prd/[id]   - 문서 삭제 (인증 + 소유권 필수)
+```
+
+**Test Results**: **52/52 passing** (100%)
+- ✅ Error Infrastructure: 17/17 tests
+- ✅ Middleware: 6/6 tests
+- ✅ POST /api/prd: 7/7 tests
+- ✅ GET /api/prd (List): 6/6 tests
+- ✅ GET /api/prd/[id]: 4/4 tests
+- ✅ PUT /api/prd/[id]: 6/6 tests
+- ✅ DELETE /api/prd/[id]: 6/6 tests
+
+**Key Features**:
+- ✅ TDD 워크플로우 준수 (Scenario → RED → GREEN)
+- ✅ 한글 에러 메시지
+- ✅ Zod 스키마 검증
+- ✅ 페이지네이션 지원 (page, limit)
+- ✅ 멱등성 DELETE (존재하지 않는 문서 → 204)
+- ✅ TypeScript strict mode 통과
+- ✅ 빌드 성공
+
+**Implementation Date**: 2026-01-09
+**Completion Date**: 2026-01-09 16:30
 
 ---
 
